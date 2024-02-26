@@ -275,6 +275,16 @@ Que tal pesquisar um pouco mais?
 
 ![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/ab8e7c14-4439-47b9-ad90-8092ddfb84d5)
 
+Segue mais ou menos a mesma linha do merge sort.
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/797ca312-3532-4f3b-9337-35c0323d7d92)
+
+## Ordenação pelo Pivô
+
+
+
+
+
 
 
 
