@@ -503,6 +503,10 @@ E quando o for chega no quarto elemento (índice 3), localiza pela primeira vez 
 Após a troca, valoresMenores é incrementada em `1` (com a linha valoresMenores++). Dessa forma, da próxima vez que o for localizar um elemento com valor menor que o pivô, ele será trocado pelo elemento que está no índice `valoresMenores` ou seja, `1`.
 
 
+# 4. BUSCA BINARIA
+
+## Dividir para Buscar
+
 
 
 
