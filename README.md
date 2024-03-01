@@ -19,10 +19,25 @@ Após entendermos o fluxo do algoritmo, fizemos a implementação do algoritmo M
 
 Estudamos a ferramenta de recursão, como ela pode ser utilizada no algoritmo Merge Sort e as diferenças dessa ferramenta com relação aos laços de repetição.
 
+Trabalhamos com o conceito de pivô, entendemos como selecionar um elemento pivô no código e como posicionar este elemento em uma lista, comparando valores e contando elementos menores;
+
+
+Após posicionar um elemento pivô em um array, desenvolvemos um código em JavaScript que percorre uma lista e separa todos os elementos entre maiores e menores que o pivô, através da `função encontraMenores()`;
+
+
+A partir do conceito de elemento pivô, entendemos o funcionamento do algoritmo de ordenação quick sort, fazendo mais simulações e testes;
+
+
+Após entendermos o algoritmo, implementamos o código utilizando JavaScript e reaproveitando funções e conceitos das aulas anteriores, como a `função trocaLugar()` e a recursão.
+
+
 
 # 1. DIVIDIR PARA CONQUISTAR
 
+
 ## Misturando Listas
+
+
 ![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/005b8f86-a53f-4cb3-b997-c7f27cefb348)
 
 Esse tipo de simulação que fazemos em código já vimos que nos ajuda bastante a entender como funciona o fluxo, os passos de um algoritmo, por exemplo, de ordenação, antes de tentarmos fazer o código dele.
@@ -280,6 +295,215 @@ Segue mais ou menos a mesma linha do merge sort.
 ![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/797ca312-3532-4f3b-9337-35c0323d7d92)
 
 ## Ordenação pelo Pivô
+
+REVER e inserir aqui (nao salvou)
+
+## Quick Sort
+
+Rever e inserir aqui (NAO SALVOU)
+
+## Entendendo o código
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/52004800-1896-4fa3-9346-bbf7c8cf677c)
+
+## IMplementando o codigo
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/1910f0ad-97db-4788-85e8-ad800e71404d)
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/396eac35-3f30-43dd-b6d6-de0ce34140ee)
+
+Então se o índice da atual esquerda for menor ou igual ao índice da atual direita, nós trocamos de lugar: if (atualEsquerda <= atualDireita). E já temos um algoritmo pronto para trocar de lugar, que está dentro do meu arquivo “trocaMenores”, é a função “trocaLugar”.
+
+ O que podemos fazer então no final do arquivo “encontraMenores.js” é um module.exports = trocaLugar;.
+
+ E importamos dentro de “quickSort.js” a função “trocaLugar” para podermos usá-la. Então no começo do arquivo fazemos const trocaLugar = require(‘./encontraMenores’);. E vamos usar essa função dentro do nosso if. Se for menor nós chamamos a função “trocaLugar”.
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/3e72f087-8b9f-4d91-9b4d-3fea7fa3aa76)
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/96b77cfc-55b6-4624-be48-a81b9f64c72d)
+
+testa no terminal, e ele deve retornar um array ordenado.
+
+
+
+## Para saber mais: Uma implementação “oficial”?
+
+Durante o curso, temos abordado cada algoritmo a partir do conceito, passando pela representação em diagrama/teste de mesa, para só depois implementar o código. O que pode gerar a pergunta: Existe mais de uma forma de implementar um algoritmo?
+
+A resposta é: sim. O código, com suas funções e métodos utilizados, pode variar e depende inclusive da linguagem utilizada. É possível encontrar o mesmo algoritmo implementado de formas diferentes. Porém, a lógica de funcionamento do algoritmo sempre permanece a mesma. Por esse motivo não começamos direto pelo código e sim entendendo como o algoritmo é pensado e como ele deve se comportar.
+
+Durante o curso, desenvolvemos primeiramente um código mais “agnóstico”, para em seguida utilizar mais métodos como, por exemplo, array.push(). Mas seria possível desacoplar ainda mais, abstraindo funções de comparação para não depender de uma propriedade objeto.preco, por exemplo.
+
+Você pode testar suas próprias ideias ou pesquisar outras implementações. 
+
+## Faça como eu fiz: Revisando valoresMenores
+
+
+Durante a aula, utilizamos a variável valoresMenores na função divideNoPivo(). Vamos analisar esta variável para entender como ocorre a troca de posições no array.
+
+A primeira coisa que a função divideNoPivo() faz é localizar o pivô no meio do array (no array que usamos na aula é a posição listaLivros[5], ou seja: { titulo: “Rust”, preco: 22 }. Em seguida, chama a função encontraMenores() que vai contar quantos elementos com valor menor que 22 existem no array, para em seguida trocar o pivô de lugar com o elemento que está na posição seguinte à quantidade de elementos menores.
+
+
+```
+function divideNoPivo(array) {
+ let pivo = array[Math.floor(array.length / 2)];
+ encontraMenores(pivo, array);
+
+ return array;
+}
+```
+
+
+Em seguida, é feito um loop para passar os elementos com valor menor que o pivô para a esquerda dele, e os de valor maior para a direita.
+
+A variável atual guarda o objeto referente ao elemento que será comparado com o valor do pivô, e é dessa variável que pegaremos a propriedade preco.
+
+
+```
+function divideNoPivo(array) {
+ let pivo = array[Math.floor(array.length / 2)];
+ encontraMenores(pivo, array);
+ let valoresMenores = 0;
+
+ for(let analisando = 0; analisando < array.length; analisando++) {
+   let atual = array[analisando];
+ }
+
+ return array;
+}
+```
+
+Chegamos à condicional `if`, que faz a comparação do preco entre o pivô e o atual. Caso o preço do elemento atual seja menor, chamamos a função trocaLugar para trocar a posição do elemento atual com o elemento na posição valoresMenores - lembrando que o valor inicial dessa variável é `0`, o que corresponde ao índice do primeiro elemento do array.
+
+Em seguida, o valor da variável `valoresMenores` é incrementado.
+
+
+```
+function divideNoPivo(array) {
+ let pivo = array[Math.floor(array.length / 2)];
+ encontraMenores(pivo, array);
+ let valoresMenores = 0;
+
+ for(let analisando = 0; analisando < array.length; analisando++) {
+   let atual = array[analisando];
+   if(atual.preco <= pivo.preco && atual !== pivo) {
+     trocaLugar(array, analisando, valoresMenores)
+     valoresMenores++
+   }
+ }
+
+ return array;
+}
+```
+
+
+Destrinchando o intuito da variável valoresMenores: ela está controlando a posição onde serão inseridos os elementos com valores menores que o pivô - lembrando que nesse momento o pivô já está posicionado em seu índice correto.
+
+Por esse motivo valoresMenores é iniciada no índice 0: durante o laço for, cada elemento do array tem sua propriedade preco comparada com preco do elemento pivô. Quando é encontrado o primeiro elemento com valor menor (PHP no índice 3), o código entra no bloco if e chama a função trocaLugar() passando como parâmetros de troca a posição do elemento atual e a posição 0, que é o valor da variável valoresMenores neste momento da execução.
+
+Isso vai fazer com que um elemento de valor menor que o pivô assuma o lugar de um elemento de valor maior.
+
+Ou seja, após a primeira execução da função saímos de:
+
+```
+[
+ {
+   titulo: "Go",
+   preco: 45
+ },
+ {
+   titulo: "C++",
+   preco: 35
+ },
+ {
+   titulo: "Java",
+   preco: 30
+ },
+ {
+ titulo: "PHP",
+ preco: 15
+ },
+ {
+   titulo: "Elixir",
+   preco: 50
+ },
+ {
+   titulo: "Rust",
+   preco: 22
+ },
+ // restante dos elementos
+]COPIAR CÓDIGO
+Após o posicionamento do pivô:
+
+[
+ {
+   titulo: "Go",
+   preco: 45
+ },
+ {
+   titulo: "C++",
+   preco: 35
+ },
+ {
+   titulo: "Rust",
+   preco: 22
+ },
+ {
+ titulo: "PHP",
+ preco: 15
+ },
+ {
+   titulo: "Elixir",
+   preco: 50
+ },
+ {
+   titulo: "Java",
+   preco: 30
+ },
+
+ // restante dos elementos
+]
+```
+
+
+E quando o for chega no quarto elemento (índice 3), localiza pela primeira vez um elemento do array com valor menor que o pivô. Então o valor de valoresMenores é `0` e o elemento PHP de valor 15 trocará de lugar com Go de 45.
+
+```
+[
+ {
+   titulo: "PHP",
+   preco: 15
+ },
+ {
+   titulo: "C++",
+   preco: 35
+ },
+ {
+   titulo: "Rust",
+   preco: 22
+ },
+ {
+   titulo: "Go",
+   preco: 45
+ },
+ {
+   titulo: "Elixir",
+   preco: 50
+ },
+ {
+   titulo: "Java",
+   preco: 30
+ },
+
+ // restante dos elementos
+]
+```
+
+
+Após a troca, valoresMenores é incrementada em `1` (com a linha valoresMenores++). Dessa forma, da próxima vez que o for localizar um elemento com valor menor que o pivô, ele será trocado pelo elemento que está no índice `valoresMenores` ou seja, `1`.
+
+
+
 
 
 
