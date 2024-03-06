@@ -30,6 +30,19 @@ A partir do conceito de elemento pivô, entendemos o funcionamento do algoritmo 
 
 Após entendermos o algoritmo, implementamos o código utilizando JavaScript e reaproveitando funções e conceitos das aulas anteriores, como a `função trocaLugar()` e a recursão.
 
+Aplicamos novamente o paradigma “dividir para conquistar” para desenvolver o algoritmo de busca chamado busca binária;
+
+Utilizamos recursão para manipular um array ordenado e buscar um elemento, seguindo o fluxo da busca binária que foi visto nas simulações e testes;
+
+Desenvolvemos código em JavaScript para implementar o algoritmo de busca binária;
+
+Continuamos a prática de funções recursivas, vendo o funcionamento do “caso base”, que pode ser considerada como a condição de parada de uma função recursiva.
+
+Aprendemos a fazer a análise assintótica do algoritmo de busca binária e por que este é considerado um algoritmo de complexidade logarítmica, em comparação com a busca linear que é um algoritmo de complexidade linear;
+
+Fizemos a análise assintótica dos algoritmos de ordenação quick sort e merge sort e analisamos o código para entendermos por que são considerados algoritmos de complexidade linear-logarítmica;
+
+E o que significa, em termos de performance, a diferença entre algoritmos de crescimento linear, quadrático e logarítmico.
 
 
 # 1. DIVIDIR PARA CONQUISTAR
@@ -772,13 +785,561 @@ Após a troca, valoresMenores é incrementada em `1` (com a linha valoresMenores
 ## Dividir para Buscar
 
 
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/80ef0ea4-43d6-4832-9acc-09ec2e49dbbe)
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/9069e541-c3d6-47ba-bc54-8c572ebe5a5e)
 
 
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/7f55cd9a-c669-4933-8d3b-5f2eba972171)
 
 
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/08c55f69-1dce-4df4-abc8-f8f9b4f2c6ce)
 
 
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/16dbcd13-7602-46cb-8f34-62e93478a77e)
 
+ como seria se, ao invés de um algoritmo de ordenação, tentássemos utilizar isso em uma busca?
+
+[00:10] Por exemplo, até agora nos algoritmos de busca que vimos, aquele primeiro que pensamos em implementar com for vai percorrer todo um array para encontrar e devolver o elemento, ou ir até o final para dizer que não encontrou o elemento.
+
+[00:29] Se tentássemos dividir a busca em partes, será que funcionaria melhor? Vamos ver então com um exemplo mais do mundo real.
+
+[00:39] É possível que você já tenha feito a seguinte brincadeira: eu vou pensar num número de 1 a 10 ou de 1 a 100, tanto faz, e você vai tentar adivinhar qual é esse número com a menor quantidade de chutes necessária.
+
+[00:53] Então se meu número é 50 e você chuta 25, eu falo “mais”, se for um número maior, ou “menos”, se for um número menor.
+
+[01:03] Como seria a melhor estratégia para um jogo como esse? Normalmente a pessoa vai ajudar quem está tentando chutar dizendo “menos” ou “mais”. E se simulássemos esse jogo com um número de 1 a 10 para ficar mais fácil de visualizar, ao invés de 1 a 100?
+
+[01:25] Vamos tentar simular e pensar assim: a pessoa pensou no número 7, e eu vou começar a chutar. Eu chuto o número 5, por exemplo. E a pessoa vai falar “mais”, porque eu chuto no 5 e o número é 7.
+
+[01:42] Nesse momento nós descartamos automaticamente tudo que é de 5 para baixo, porque ela falou que é mais, então não tem porque eu ficar chutando 3, por exemplo, que não tem nada a ver.
+
+[01:55] E se é uma lista de 10 números e eu chuto bem no meio e erro, eu já consigo descartar metade de uma lista, ou para cima ou para baixo, depende se a pessoa fala “mais” ou “menos”.
+
+[02:08] E como seria o próximo chute? Nós podemos seguir sequencialmente, chutando 6, 7 e assim por diante, mas não é a melhor alternativa. Nós poderíamos aplicar essa mesma lógica para chutar 8, que é mais ou menos no meio, e tentar descartar novamente metade da lista.
+
+[02:25] Eu chuto 8, a pessoa vai falar “menos”. Só que com essa abordagem, com dois chutes eu já descartei quase todos os números. Sobrou apenas 6 e 7.
+
+[02:36] Ou seja, eu consigo acertar um número em no máximo três chutes. Descartei a metade, depois descartei metade da metade, e apenas com 3 chutes no máximo eu consigo acertar, porque eu vou direto no número certo ou eu vou descartar o número que está errado e ter o número certo por redução de possibilidades.
+
+[02:59] Se aplicássemos isso, por exemplo, para uma lista telefônica ou uma lista de produtos ordenados por preço, nós meio que já utilizamos essa lógica sem perceber na cabeça.
+
+[03:13] Então se eu estou procurando numa lista um produto de R$ 30, eu dou uma olhada no começo da lista e o primeiro preço é 15, olho o último preço e é 50, nós meio que já sabemos mais ou menos onde procurar. Nós não vamos passar por 15, 20, 21, 22, 23, nem o contrário. Nós encurtamos, fazendo isso mentalmente. Eu vou direto na margem mais ou menos onde está o 30.
+
+[03:44] É a mesma coisa numa lista ordenada em ordem alfabética. Se seu nome começa com J você não começa procurando o seu nome na lista no A. Você não precisa, você pode ir direto no começo do J e encontrar.
+
+[03:55] Se é “Ju” de Juliana, então não está no “Ja”, de Janaína, eu posso tentar achar o final dos que começam com J, porque é mais provável que o meu nome esteja lá.
+
+[04:04] E nós já fazemos isso normalmente na nossa cabeça. E da mesma forma que fizemos com o jogo de acertar o número, nós conseguimos reduzir uma lista. Por exemplo, se eu quero mais ou menos no meio, tiro os muito baratos e os muito caros, e conseguimos acertar com uma quantidade bem menor de chutes.
+
+[04:21] Ou seja, no código nós conseguiríamos acertar o elemento que estamos buscando com uma quantidade bem menor de operações do que ficar procurando A, B, C, D, E quando eu quero o J, ou no 1, 2, 3, 4, 5 quando eu quero o 20, por exemplo.
+
+[04:38] Se considerarmos um array de mil elementos, a lógica vai ser parecida: dividimos de mil para 500, de 500 para 250, de 250 para 175 e por aí vai.
+
+[04:48] Vamos sempre diminuindo a lista, ou seja, numa quantidade muito menor de operações fica bem menor, mas mesmo assim o crescimento em quantidade maior de operações também não vai ser tanto assim.
+
+[04:59] Vamos tentar implementar um algoritmo que traduza essa divisão para conquista para fazer uma busca.
+
+## Busca Binária
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/3500b1f3-7b1f-4fe6-baed-ce8294b805d2)
+
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/28e9a38b-1ad9-41a8-b16d-ce026761fb57)
+
+Testa no terminal.
+
+Vamos tentar rodar com um valor que nao existe na lista:
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/91d7e94e-86ce-48b2-a93a-ba46a2fce13c)
+
+Vamos fazer essa implementação em código do que nós vimos anteriormente. Eu já vou deixar pronto também um arquivo chamado “arrayOrdenado.js” com a lista de livros que já estamos trabalhando, porém agora já ordenada, pronta para fazer a busca. Dentro da pasta eu vou criar um arquivo que eu vou chamar de “busca.js”.
+
+[00:21] A primeira coisa a fazer, como sempre, é importar a nossa lista livros: const listaLivros = require(‘./arrayOrdenado’);. E vamos criar a nossa função: function busca(). E o que essa função precisa receber? A primeira coisa será o array que vamos trabalhar: function busca(array, ).
+
+[00:40] E lembrando do que fizemos anteriormente no merge sort e no quick sort, a cada vez que executarmos a função busca, ela terá que fatiar o array e trabalhar com partes cada vez menores. Então começa com o array inteiro, e se o valor buscado for menor vamos cancelar toda a parte direita do array.
+
+[01:04] Então a cada chamada de função nós precisamos passar para ela o que eu vou chamar de “de” e “até”, ou seja, o índice onde começa a fazer a busca e o índice até onde vai, porque estaremos trabalhando com fatias do array.
+
+[01:19] Então o segundo parâmetro eu vou chamar de “de” e o terceiro de “até”: function busca(array, de, ate).
+
+[01:26] E o quarto parâmetro será o valor buscado, porque obviamente precisamos passar alguma coisa para essa função buscar para nós e eu vou pedir para retornar o índice onde está o elemento; ou não, se não encontrar nada. Então fica function busca(array, de, ate, valorBuscado).
+
+[01:39] Revisando então como o algoritmo tem que funcionar: a cada vez que chamamos a função, tem que pegar um elemento sempre do meio do array e verificar. Por exemplo, se o elemento buscado é de 22 e o do meio é de 30, significa que o elemento buscado tem um valor menor, então ele estará à esquerda do elemento do meio. Lembrando que estamos trabalhando com um array já ordenado.
+
+[02:07] E o contrário, se por exemplo, o valor buscado é 40 e valor do meio é 30, significa que o valor buscado está em algum lugar à direita, então temos que procurar à direita do meio e podemos descartar todo o resto.
+
+[02:23] Então o que temos que fazer primeiro é encontrar o meio. Então vou criar uma const meio. Agora não é mais pivô, porque sempre estaremos trabalhando com o meio do array, e esse meio do array não vai se movimentar durante o processamento da função a cada iteração. O meio é sempre o meio.
+
+[02:41] E será o resultado de Math.floor, e passamos “(de + até)”, a mesma coisa que fizemos anteriormente. Passamos o índice de começo e o de final e dividimos por dois. Eu vou englobar “de + até” com parênteses para fazer essa operação primeiro, então const meio = Math.floor((de + ate) / 2);. E com isso já temos o meio.
+
+[03:03] Eu vou criar outra const que eu vou chamar de atual, que será o array na posição meio, porque temos o objeto e conseguimos acessar a propriedade preço para fazer a comparação: const atual = array[meio];.
+
+[03:14] A partir disso temos três coisas possíveis que podem acontecer. A primeira coisa que pode acontecer é o elemento do meio ser exatamente o elemento que estamos buscando. Então pode acontecer da primeira vez ou podemos percorrer esse array até que isso aconteça.
+
+[03:33] Então se o valor buscado for igual ao preço atual, nós só retornamos o meio, porque já é o índice onde está o valor que estamos buscando: if (valorBuscado === atual.preco) { return meio; }. Acabou processamento por aqui e saiu da função.
+
+[03:55] Temos outros dois casos possíveis. Um deles é se o valor buscado for menor do que o preço atual. Isso significa que temos que procurar em alguma parte do array: if (valorBuscado < atual.preco).
+
+[04:08] E o outro caso é se o valor buscado for maior do que o preço atual, e então temos que buscar em outra parte do array: if (valorBuscado > atual.preco).
+
+[04:20] E agora nós vamos usar a recursão para fazer a busca se chamar da mesma forma que fizemos com o merge sort e o quick sort. Porque cada vez que chamarmos a função busca, vamos passar valores atualizados de início e de fim do array para fazer a busca dentro dele.
+
+[04:41] E vamos fatiar esse array até que caia na situação de valor buscado ser igual ao preço atual, e nesse caso em que encontrou o elemento, retorna o índice do elemento e fecha o processamento.
+
+[04:57] Então dentro do primeiro if, em que o valor buscado é menor do que o preço atual, nós temos que retornar busca, passando agora como parâmetro array: return busca(array, ).
+
+[05:09] E vamos ver quais são os valores de “de” e de “até” que temos que passar. Se o valor buscado for menor do que o preço atual, isso significa que podemos descartar tudo que está à direita do valor do meio, inclusive ele.
+
+[05:30] Então nesse caso quais seriam os valores atualizados de “de” e de “até”? O de “de” continua sendo o primeiro índice que passamos, o índice 0, no caso da primeira chamada da função.
+
+[05:45] Nós continuamos trabalhando com o mesmo “de”, no caso, o índice 0 que depois vai mudar. Só que agora até onde vai nossa busca? Nossa busca não precisa mais ir até o final, ela pode parar antes do meio, porque o meio para o final já foi descartado.
+
+[06:02] Então a nossa busca vai começar onde já estava começando, no caso, no índice 0, e depois vai continuando, e vai parar antes do meio.
+
+[06:14] Ou seja, a condição de início continua sendo “de”, só que agora a condição de parada vai ser meio menos um: return busca(array, de, meio -1).
+
+[06:30] Então vamos começar onde já estava começando, só que agora paramos antes do meio, descartando toda a parte do meio para a direita. E o valor buscado continua sendo o mesmo, e retorna esse valor: return busca(array, de, meio -1, valorBuscado);.
+
+[06:48] A outra condição, que é valor buscado maior do que o preço atual, vai ser a mesma lógica, só que vamos buscar numa parte diferente do array. Começamos passando o array como parâmetro: return busca(array, ).
+
+[07:05] O “de” agora não é mais o começo. Se o valor buscado for maior do que o meio, fazemos o contrário: descartamos do começo até o meio. Então nosso valor de início passa a ser 1 depois do meio, porque nós descartamos o meio e tudo que vem antes dele. Então o valor de início agora, ao invés de “de”, é “meio + 1”: return busca(array, meio + 1).
+
+[07:32] E o índice de parada, até o final do array, é “até”, que já era onde estávamos parando: return busca(array, meio + 1, ate). E o valor buscado continua sendo o mesmo: return busca(array, meio + 1, ate, valorBuscado).
+
+[07:46] Agora vamos testar a função, passando console.log(busca(listaLivros)). A condição de início da primeira chamada da função é o índice 0, o final vai ser listaLivros.length -1, como já fizemos nas outras vezes: console.log(busca(listaLivros, 0, listaLivros.length -1)).
+
+[08:12] E o valor buscado vamos fazer um teste com o 40. Vou passar o 40, que é o índice 8 do nosso array. Então vou passar 40, que é o valor buscado: console.log(busca(listaLivros, 0, listaLivros.length -1, 40)).
+
+[08:29] E vamos para o terminal. Eu já estou na pasta certa, vou chamar node busca.js. E ele retornou o índice 8, ou seja, está funcionando. Mas o que acontece se de repente passarmos um valor que não existe?
+
+[08:48] Eu vou tentar antes passar novamente essa função com um valor menor para ver se funciona. Então vou tentar, por exemplo, o 20, que é o índice 1. Então vou chamar a mesma função passando 20 como parâmetro: console.log(busca(listaLivros, 0, listaLivros.length -1, 20)).
+
+[09:01] Rodamos novamente no terminal e ele retorna o índice 1. Está funcionando. Só que o que acontece se eu passar, por exemplo, 60, que é um valor que não tem? Vamos tentar rodar novamente com 60.
+
+[09:13] Ele deu um stack overflow, aconteceu um erro. Quando o node entra num loop infinito ele vê que já não dá mais para colocar processamento nessa pilha, então ele para de executar. Vamos ver o que aconteceu no próximo vídeo.
+
+
+## Refatorando a Busca
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/bf41ffc2-98f5-46f8-b31d-e22808193e32)
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/9e21c95c-9dc5-4af4-8c3e-ede8b905fa62)
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/c8d46393-0939-45be-9607-028fba4783e4)
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/15518941-1fdf-4001-8b38-e19793fe0ee9)
+
+
+Implementamos o algoritmo da nossa busca, porém, o que acontece quando passamos um elemento que não existe na lista? Ele deu erro. E pode acontecer quando fazemos uma busca de o elemento não existir. E não pode dar erro nesses casos.
+
+[00:19] O que tivemos nessa situação foi um erro de pilha. Quando não estabelecemos para a recursão uma condição de parada de chamada, quando a função tem que parar de se chamar, acontece um processo parecido com o que chamamos de loop infinito quando usamos um for, por exemplo.
+
+[00:40] As funções vão se empilhando para serem executadas, e chega uma hora que aquilo explode, então o problema para. O erro que temos é que excedeu a quantidade máxima de processos que estão na pilha para serem executados. É basicamente isso.
+
+[01:00] Eu vou deixar um material sobre esse erro no material extra dessa aula. Mas enfim, tivemos um erro de stack overflow.
+
+[01:09] Vamos ver o que fazemos então para corrigir isso. Para entendermos o que está acontecendo e porque eu falei que não demos condição de parada para a recursão, eu vou colocar um console.log na primeira linha dentro da função busca.
+
+[01:30] Eu vou pedir para esse console passar o que está chegando em cada chamada da função busca nos parâmetros “de” e “até”: console.log(‘de, ate’, de, ate);.
+
+[01:41] Vamos rodar novamente. Antes de dar o stack error ele foi fazendo várias chamadas e ele começou a colocar na pilha de execução e tentar ficar chamando a função passando os valores de parâmetro “de” 11 e “até” 10.
+
+[02:10] Só que se formos ver, o valor de início não pode ser maior do que o valor de fim de um array. Temos que começar sempre num índice que é menor do que o índice onde para, porque estamos indo ordenadamente.
+
+[02:32] Agora que já sabemos o que está acontecendo, o que podemos fazer para lidar com esse erro? Voltando no código, o elemento que não existe no caso que tentamos chamar era um elemento maior, ele teria que estar à direita do meio.
+
+[02:48] Quando foram feitas as divisões, sempre tentando achar um número maior do que o maior número que existe, foi-se acrescentando um no valor de “de”. Então “de” sempre começava com mais 1, até que o “de” extrapolou o valor de “até”.
+
+[03:10] Então podemos pensar que quando isso acontece é que não encontrou o elemento. Então se não encontrou elemento, retorna alguma mensagem só para conseguirmos um retorno de função que faça com que ela pare de ser executada.
+
+[03:27] Vamos fazer então da seguinte forma: antes de começarmos o primeiro if que faz as comparações de valores, vamos colocar um if a mais. Eu vou dizer que se “de” for maior do que “até”, eu vou pedir para retornar -1: if (de > ate) { return -1; }. - 1 é o número de índice que o JavaScript costuma retornar nas suas funções de sort quando não encontra nada.
+
+[03:54] Então se encontra um índice ele retorna o número do índice. Se não encontra nada que foi buscado retorna -1. Então vamos retornar -1 se “de” for maior do que “até”.
+
+[04:08] Vou limpar o console e testar novamente. Agora o console alertou o que estava acontecendo. Estava tentando primeiro de 0 a 10, depois de 6 para 10, depois de 9 para 10, depois de 10 para 10, e ele foi para frente até que “de” ficou maior do que o “até”. E então ele retornou para nós o -1.
+
+[04:27] Podemos apagar o console que colocamos de verificação para deixar o código um pouco mais limpo.
+
+[04:34] E agora eu acho que a nossa função de busca está completa. O que acabamos de desenvolver é uma busca chamada de busca binária, porque ela sempre divide a lista em duas partes e procura em uma das duas.
+
+[04:49] Então divide em duas, procura em uma das duas partes; divide essa parte em mais duas e procura em cada uma delas; divide em mais duas e procura em cada uma delas.
+
+[04:57] Dá para perceber que com esse método o computador vai fazer menos operações do que se fosse pesquisando um por um, passando por todos os elementos. Numa lista de mil elementos ele vai fazer mil processamentos, mas com a busca binária vai fazer bem menos. Primeiro vai dividir, vai pegar só 500 elementos; depois vai dividir de novo e assim por diante.
+
+[05:22] Nós temos a impressão de que esse algoritmo é melhor, mas vamos ver agora em seguida se realmente ele é melhor e porque.
+
+
+## Para saber mais: Outros erros da busca binária
+PRÓXIMA ATIVIDADE
+
+Durante a aula, vimos que, se não colocamos a condição de > ate e tentarmos buscar um número inexistente maior do que qualquer um da lista, o resultado será um erro do tipo RangeError: Maximum call stack size exceeded.
+
+Vamos falar um pouco mais sobre este erro em seguida. Mas agora, vamos testar mais dois casos: Um elemento inexistente menor do que qualquer um da lista, e outro inexistente no meio, ou seja, entre os valores da lista.
+
+Valor menor:
+Vamos chamar a função passando 1 como valor buscado:
+
+console.log(busca(listaLivros, 0, listaLivros.length - 1, 1));COPIAR CÓDIGO
+Executando o código, temos o seguinte retorno no terminal:
+
+/<diretório>/aula-4/busca.js:11
+  if (valorBuscado === atual.preco) {
+                             ^
+
+TypeError: Cannot read property 'preco' of undefinedCOPIAR CÓDIGO
+Ué, não deveríamos ter recebido um erro do tipo rangeError? O que aconteceu de diferente?
+
+Vamos conferir o que a função busca() está recebendo como parâmetro a cada chamada:
+
+function busca(array, de, ate, valorBuscado) {
+ console.log('de, ate', de, ate)
+ //restante do código
+}COPIAR CÓDIGO
+E executar novamente:
+
+de, ate 0 10
+de, ate 0 4
+de, ate 0 1
+de, ate 0 -1COPIAR CÓDIGO
+No caso de valores menores, o código do algoritmo chama a função busca() passando sempre o valor do parâmetro ate diminuindo um número:
+
+ if (valorBuscado < atual.preco) {
+   return busca(array, de, meio - 1, valorBuscado);
+ }COPIAR CÓDIGO
+Quando o valor atinge -1, que não é um valor válido de índice de array, o resultado de atual.preco retornará undefined.
+
+Valor inexistente no meio do array
+Vamos chamar a função passando 36 como valor buscado. Não é menor do que todos nem maior do que todos, porém não existe nenhum objeto com esse valor no array:
+
+console.log(busca(listaLivros, 0, listaLivros.length - 1, 36));COPIAR CÓDIGO
+Executando o código, temos o seguinte retorno no terminal:
+
+RangeError: Maximum call stack size exceededCOPIAR CÓDIGO
+Dessa vez, voltamos a receber o rangeError. Observando o `console.log(‘de, ate’, de, ate), os valores finais retornados são:
+
+de, ate 8 7
+de, ate 8 7
+de, ate 8 7
+de, ate 8 7COPIAR CÓDIGO
+Até atingir call stack size exceeded, da mesma forma que ocorreu quando passamos o valor de 60, maior do que o maior elemento do array.
+
+Faça a conferência em seu projeto!
+
+## Para saber mais: Maximum call stack size
+PRÓXIMA ATIVIDADE
+
+Vamos ver um pouco mais a fundo o que significa o erro RangeError: Maximum call stack size exceeded visto anteriormente.
+
+A pilha de chamadas
+Em programação, uma pilha é uma estrutura de dados onde o último item adicionado é o primeiro a ser removido - como uma pilha de livros no mundo real, por exemplo. Também nos referimos como pilha (ou stack) a estrutura onde estão “empilhados” os processos que estão sendo executados em um programa.
+
+Nem todo interpretador ou linguagem de programação lida da mesma forma com os processos que devem ser executados por um programa. O NodeJS trabalha com o paradigma de programação orientada a eventos (event driven programming), e o gerenciamento dos processos ocorre através do que chamamos de loop de eventos.
+
+Não vamos entrar em detalhes aqui sobre como ocorrem a entrada e a saída de processos deste loop e a forma como o Node trabalha com threads e programação assíncrona - são assuntos complexos o suficiente para terem seus próprios cursos. Porém, vale mencionar aqui que, assim como em outras linguagens de programação, o JavaScript também trabalha com pilhas de chamadas. No NodeJS, esta pilha faz parte da estrutura do loop de eventos; quando uma função é chamada por um programa ela entra na stack, ou seja, na pilha de execução, onde apenas um processo é executado por vez e o próximo processo só é executado após a finalização do processo atual.
+
+Esta pilha tem uma quantidade limitada de processos que podem ser empilhados (o que depende de muitos fatores, como memória disponível, arquitetura, etc); caso o interpretador não consiga limpar a pilha, ou seja, executar e finalizar os processos/funções que estão empilhados, ao atingir o limite o programa cai no chamado erro de estouro de pilha, também chamado de stack overflow (daí o nome do famoso [fórum de programação](https://stackoverflow.com/)).
+
+Um dos motivos mais comuns para o estouro de pilha são justamente as chamadas recursivas onde o caso base (como vimos na atividade “Para Saber Mais” da aula 2) não existe ou não foi definido da forma correta. Sem o caso base, as funções recursivas não param de ser chamadas e vão se empilhando na pilha de chamadas, até que não haja mais recursos para processar o programa.
+
+No caso do exemplo visto durante a aula, o NodeJS retorna o erro RangeError: Maximum call stack size exceeded, ou “tamanho máximo da pilha de chamadas excedido” e encerra a execução.
+
+Por isso, é muito importante sempre testar as funções recursivas e definir quando interromper a recursividade.
+
+# 5. Analise dos Algoritmos
+
+## Analise da Busca
+
+Algoritmo de crescimento linear --> de um em um da lista
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/52db1371-b0e5-4ed1-ae1c-624ae2f54be6)
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/3c3cd16b-03f4-41e3-b579-e220cd4bbb7d)
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/0598bf13-edb8-4e48-8d50-b0ad67b3eaa7)
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/069da77b-fb02-4ae8-b52a-f238c0dbf404)
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/b26bea0f-0ee4-4497-8ae9-d00d64aea5ad)
+
+log na base 2
+
+o numero de operações cresce de acordo com o log de n.
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/34963a50-3842-4499-826d-4e7d9e365782)
+
+![image](https://github.com/FlavianaFXT/algoritmos-js-II/assets/113718720/f1d9dafe-e434-4545-ac72-bb706df18454)
+
+Quando buscamos algo em uma lista utilizando uma busca linear, o programa tem que percorrer todos os elementos da lista até encontrar o que queremos.
+
+[00:11] Claro que o elemento buscado pode, por exemplo, estar na primeira posição ou ser uma das primeiras posições.
+
+[00:16] Mas quando estamos pensando em cálculo de complexidade de algoritmo isso é meio que irrelevante. Não podemos levar isso em consideração, mesmo porque o elemento pode não existir na lista.
+
+[00:29] E se o elemento não existe na lista o programa só vai retornar essa informação depois que passar por todos os elementos, do índice 0 até o último índice, não importa se for uma lista de 10, mil, 10 mil ou 100 mil elementos. Então numa lista de 100 mil elementos são 100 mil operações; numa lista de 20 mil elementos, 20 mil operações.
+
+[00:50] Esse algoritmo que pula de elemento em elemento nós dizemos que é um algoritmo de crescimento linear, porque ele cresce em complexidade numa relação direta com a quantidade de elementos que tem na lista. Nós veremos isso num gráfico daqui a pouco.
+
+[01:11] E a busca binária que acabamos de fazer? Vamos ver como ela funciona. Na busca binária nós pegamos um array, dividimos em dois e localizamos se está para a esquerda ou para a direita do meio. E nessa única operação já descartamos metade de uma lista.
+
+[01:29] Então numa lista de mil elementos já descartamos de uma vez só 500 elementos. No caso da nossa lista de 11 elementos, vai dividir no meio e descartar de uma vez seis elementos.
+
+[01:41] E vamos, por exemplo, continuar buscando o elemento que está no índice 8, o nono elemento, de valor 40. Começamos dividindo no índice 5, o sexto elemento. Nessa já jogamos todos os seis da esquerda para fora.
+
+[02:04] Na próxima vez que formos executar esse algoritmo nossa lista já diminuiu. Dividimos em dois elementos para um lado, três elementos para o outro. Já cortou mais dois e deixou os três da direita.
+
+[02:20] Na próxima vez teremos só três elementos para dividir em um de um lado e dois do outro. E nessa já podemos fechar esse algoritmo, porque o elemento buscado já foi encontrado, ele é o único elemento que sobrou do lado dele.
+
+[02:38] Então vamos colocar isso de uma outra forma. Nós podemos dizer então que para uma lista de dois elementos precisamos de uma operação para encontrar o elemento certo em uma busca linear.
+
+[02:49] Se dobrarmos essa lista para quatro elementos, precisamos de duas operações no máximo. Porque a primeira operação vai quebrar o array de quatro elementos em dois, ficando dois para cada lado. E tendo dois para cada lado, com uma operação eu resolvo, lembrando sempre que um dos lados é sempre descartado.
+
+[03:09] Dobrando de novo para 8 elementos, agora eu tenho uma operação para dividir em dois arrays de quatro. Um dos arrays de quatro elementos já é descartado e eu fico com um deles. Eu divido ele novamente em dois elementos e uma operação resolve.
+
+[03:27] Eu acho então que tem um padrão. Para dois elementos uma operação. Para quatro elementos duas operações. Para oito elementos três operações. Para 16 elementos quatro operações, se seguirmos essa lógica.
+
+[03:45] Expressando isso de uma forma matemática podemos dizer que com uma operação conseguimos analisar uma lista de 2 elevado a um elemento. Ou seja, dois elementos.
+
+[03:58] Com duas operações, dois elevado a dois elementos, ou seja, quatro elementos. Com três operações, dois elevado a três, então oito elementos. Com quatro operações, dois elevado a quatro, então 16 elementos. Com 10 operações são dois elevado a 10, que dá 1024 elementos.
+
+[04:23] Então para uma lista de 1024 elementos, uma busca linear levaria 1024 operações para encontrar um elemento qualquer. E numa busca binária eu só preciso de 10 operações.
+
+[04:38] E como chegamos a esse número de quantas operações são necessárias para n elementos, digamos assim? Esse número é um log na base 2. Colocando de outra forma, dizemos que o número que está colocado como potência resulta na quantidade de elementos que estamos buscando.
+
+[04:59] Ou seja, 2 elevado a que número dá 1024 elementos? É 10. Então concluímos que o número de operações cresce de acordo com o log desses elementos. Ou seja, é um algoritmo que cresce e expressamos a complexidade desse algoritmo como O log de N.
+
+[05:25] Vamos uma olhada no gráfico que já trabalhamos no curso anterior para ver isso colocado com números.
+
+[Aula5_video1_imagem2]
+
+[05:34] Então eu tenho na minha planilha já uma coluna com a quantidade de elementos, e eu coloquei n, que é linear. Então eu tenho um elemento e uma operação; 32 elementos e 32 operações.
+
+[05:49] E no gráfico está mostrando a linha reta, por isso o nome, de crescimento desse algoritmo, que é a busca linear.
+
+[05:59] Agora, para calcular o log de N, vamos passar o valor como sendo A2, que na minha planilha é a casa onde está o número de elementos. E a base é sempre dois, então =log(A2, 2).
+
+[06:18] Eu vou usar o recurso de auto completar da planilha. E conseguimos ver no gráfico que o crescimento em complexidade do algoritmo linear é muito maior do que se trabalharmos com um algoritmo de crescimento logarítmico.
+
+[06:38] Eu vou diminuir um pouco a quantidade de elementos e deixar só 32 para conseguirmos visualizar melhor o gráfico.
+
+[06:47] Conseguimos ver a curva de crescimento de um algoritmo que é O log de n, que cresce em complexidade de uma forma muito mais suave do que um algoritmo linear, que vai percorrer uma lista completa de mil, 2 mil ou 5 mil elementos.
+
+[07:07] Então duas coisas que já temos na cabeça: primeiro que é muito importante sabermos como calcular a complexidade de um algoritmo, porque isso impacta na performance do programa que vai utilizar esse algoritmo.
+
+[07:24] E vimos também que a busca binária trabalha com um nível de complexidade bem menor do que a busca linear. Ou seja, é muito melhor você fazer 10 operações para uma lista de 1024 elementos do que você fazer 1024 operações para uma lista de 1024 elementos.
+
+[07:43] E já descobrimos como relacionar o número de base 2 elevado a n e como isso consegue representar a quantidade de elementos que conseguimos trabalhar, de quantas operações para qual quantidade de elementos.
+
+[08:00] Então agora para uma lista de 5 mil ou de 10 mil elementos, nós conseguimos descobrir quantas operações precisamos fazer através do log.
+
+[08:11] Mas lembrando que para a busca binária funcionar o array precisa estar ordenado. Então agora precisamos analisar a complexidade de algoritmo das ordenações que trabalhamos anteriormente durante esse curso.
+
+
+## Analise das Ordenações
+
+Já fizemos então a análise do algoritmo de busca linear e busca binária, que foi a que desenvolvemos agora nesse curso.
+
+[00:09] Vamos então fazer a análise dos algoritmos de ordenação, merge sort e quick sort, que desenvolvemos durante o curso. Começando pelo merge sort, vamos dar uma olhada no código dele.
+
+[00:21] O código que desenvolvemos para o merge sort está em boa parte baseado numa função que chamamos de “ordena”. Essa função “ordena” percorre toda a lista em um loop while, então podemos considerar que os elementos serão percorridos de forma linear, um por um. Ela vai percorrendo, comparando e empurrando para o array de resultados.
+
+[00:51] E cada vez que a função merge sort é chamada de forma recursiva, ela divide o array em duas partes cada vez menores. Então o que temos nesse algoritmo é um processamento que acontece de forma linear, ou seja, n, que cresce linearmente; e também um algoritmo que cresce de forma logarítmica, log de n na base 2. Então o que podemos concluir é que nós temos um algoritmo que é n vezes log de n.
+
+[01:29] Vamos então comparar isso com um algoritmo de complexidade quadrática, que foi o que vimos no curso anterior, que executa loop dentro de loop, for dentro de for, while dentro de while e etc.
+
+[01:47] Na planilha nós temos a coluna com a quantidade de elementos de uma lista, parando em 2048, e uma coluna com o resultado do cálculo de complexidade quadrática, ou seja, for dentro de for e loop dentro de loop, que foi o que concluímos que é a complexidade de algoritmos, por exemplo, como selection sort e insertion sort, usados no curso anterior.
+
+[02:17] E podemos ver que, por exemplo, em 2048 elementos temos uma quantidade de operações de 4.194.304, porque fazemos a quantidade de elemento vezes a quantidade de elemento. Então 64 x 64, 128 x 128. Quando isso vai para 2048 é 2048 x 2048.
+
+[02:42] E um array de 2000 elementos não é um array tão grande assim. Qualquer escola de tamanho pequeno tem uma quantidade maior até de alunos, só para termos um exemplo de onde uma lista poderia ser aplicada.
+
+[02:56] Então a diferença de 4 milhões de operações num selection sort, por exemplo, utilizando um algoritmo de ordenação que cresce de complexidade logarítmica, nós decrescemos essa complexidade de 4 milhões para 22.528 operações, para uma lista de 2048 elementos.
+
+[03:22] E nesse caso não é log de n, é n vezes log de n. Já estamos considerando o while, aquele loop que será executado pela função “ordena”.
+
+[03:34] Algo parecido acontece na estrutura do quick sort. Vamos dar uma olhada no código que desenvolvemos para o quick sort. O quick sort tem uma função que, ao invés de “ordena”, chamamos de “particiona”. A função “particiona” vai dividindo, vai particionando o array e fazendo as trocas de lugar.
+
+[03:56] E dentro da função “particiona”, de forma parecida com o que temos na função “ordena”, nós temos um while.
+
+[04:04] Então também podemos dizer que esse while vai ficar percorrendo os elementos, então ele é linear, porque ele precisa comparar cada um dos elementos de um lado para encontrar os maiores ou os menores.
+
+[04:16] E enquanto isso a função quick sort vai também funcionar de forma recursiva, chamando a função “particiona”, de forma bem parecida com o que fizemos no merge sort.
+
+[04:27] Então podemos dizer que o quick sort também é um algoritmo n vezes log de n. Mas tem dois whiles dentro do while principal. Não teria que ser n quadrático vezes log de n?
+
+[04:49] Na verdade os dois whiles de dentro nós não consideramos um loop completo, passando por todos os elementos do array, porque esses whiles que estão dentro do while principal percorrem apenas o trecho necessário. Eles não percorrem o array inteiro. Então ele vai pegar um pedaço, outro pedaço, e assim por diante.
+
+[05:13] Então os loops que eles tão fazendo dentro do while principal não são relevantes em termos de quantidade de operações que estão sendo feitas nesse algoritmo.
+
+[05:24] Ou seja, assim como o merge sort, o quick sort também é um algoritmo n vezes log de n. Nós utilizamos a notação o vezes log de n. E no gráfico tanto de um quanto do outro a curva de complexidade também é muito menor do que o quadrático.
+
+[05:51] Eu vou tirar um pouco de elemento e deixar só 16 elementos na lista para vermos melhor no gráfico como isso ocorre.
+
+[05:57] Dá para analisar que só com 16 elementos a diferença de crescimento entre os dois algoritmos é gritante. Passamos de 64 operações para 256 operações para 16 elementos.
+
+[06:16] Então se merge sort e quick sort são iguais, como é que comparamos e escolhemos entre eles? Nesse caso, como eles crescem em complexidade basicamente da mesma forma, passamos para alguns outros detalhes, por exemplo, a quantidade de trocas internas que o algoritmo faz.
+
+[06:36] Pode ser 2n. 2n e 3n, como vimos no curso anterior, não diferem em muita coisa. Mas num universo de comparação de algoritmo podemos usar como base de comparação.
+
+[06:50] Então no final o teste será feito com base em dados do mundo real, lembrando que cada caso é um caso.
+
+[06:56] Na média o que se vê é que o quick sort acaba sendo um pouco mais rápido e performático do que o merge sort. Na média ele acaba fazendo menos operações.
+
+[07:08] Todos os exemplos de algoritmos que vimos nesse curso partem de um princípio que chamamos de dividir para conquistar, onde um problema grande é dividido em partes pequenas. E ao resolver essas partes pequenas resolvemos o problema por inteiro.
+
+[07:27] Porque tentar atacar um problema grande de uma vez só, como faz, por exemplo, o selection sort e o insertion sort, é mais lerdo. Vai ter mais operações para serem feitas, isso reflete em mais processamento, e já vimos anteriormente como isso impacta na performance de um programa.
+
+[07:46] É bom sempre questionarmos qual é o algoritmo que está sendo utilizado para resolver algum problema. Eles resolvem problema de computação, buscar, ordenar etc.
+
+[07:57] Muitas linguagens de programação já têm os seus métodos de ordenação e de busca implementados. E uma coisa interessante é descobrirmos o que está por trás dos métodos.
+
+[08:09] Por exemplo, o JavaScript tem seu próprio método array.sort. Qual é o algoritmo que faz com que o sort do JavaScript funcione? Essa é uma coisa bacana de pesquisarmos e entendermos.
+
+[08:23] Porque por trás de toda implementação, mesmo dos métodos que as linguagens já trazem prontos para nós, existe um algoritmo.
+
+[08:32] E agora que já sabemos melhor como funcionam os conceitos que estão por trás do desenvolvimento de um algoritmo, conseguimos ir atrás e entender melhor como eles funcionam, quais são os melhores para as nossas necessidades e para as necessidades dos nossos projetos.
+
+## Para saber mais: Métodos do JavaScript
+PRÓXIMA ATIVIDADE
+
+No dia a dia do trabalho, é muito comum usarmos métodos nativos - ou seja, aqueles que já são próprios da linguagem e só precisam ser “chamados” como funções - para que nosso código fique mais legível ou então para simplificar o trabalho. Exemplos bem comuns são os métodos sort() e find(), respectivamente usados para ordenação e busca.
+
+O método sort() molda elementos de um array em strings e os ordena em ordem crescente. Vamos ver um exemplo?
+
+let numeros = [1, 2, 3, 101, 20, 3, 30, 31, 40];
+numeros.sort();
+console.log(numeros);
+
+// Saída
+// [1, 101, 2, 20, 3, 3, 30, 31, 40]COPIAR CÓDIGO
+Observe que a saída mostra a classificação dos números um pouco diferente do esperado. Isso ocorre pois o método trata os elementos do array como strings e os coloca em ordem sequencial de acordo com sua posição na [tabela ASCII](https://www.asciitable.com/), onde 20 vem antes de 3.
+
+Para que o sort() funcione de acordo com o esperado, precisamos passar os parâmetros de comparação de forma explícita:
+
+var numbers = [4, 2, 5, 1, 3];
+numbers.sort(function(a, b) {
+  return a - b;
+});
+console.log(numbers);
+// Saída 
+//[1, 2, 3, 4, 5]COPIAR CÓDIGO
+Você pode conferir com detalhes o uso do sort() em JavaScript na documentação do [MDN](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/sort).
+
+Indo além do uso do método no dia a dia, já imaginou como esses métodos funcionam “por baixo dos panos”? Não é somente uma palavra para complementar seu código, pois assim como criamos funções, os métodos nativos da linguagem também possuem lógica e algoritmos por trás. Vamos conhecer um pouco mais?
+
+No JavaScript, a forma como o método é implementado depende do motor que faz a interpretação. A partir de cada versão aprovada do JavaScript pelo ECMA, as empresas ou fundações responsáveis pelos navegadores/interpretadores (chamadas de vendors no jargão da área) decidem e fazem a implementação das funcionalidades.
+
+No caso do motor V8, utilizado pelo Chrome/NodeJS, o sort() tem em sua implementação os algoritmos quick sort - ordenação rápida e insertion sort - ordenação por inserção, e funcionam da seguinte maneira:
+
+ function QuickSort(a, from, to) {
+    var third_index = 0;
+    while (true) {
+      // Insertion sort is faster for short arrays.
+      if (to - from <= 10) {
+        InsertionSort(a, from, to);
+        return;
+      }COPIAR CÓDIGO
+Por outro lado, no motor SpiderMonkey, utilizado pelo Firefox, o algoritmo utilizado por trás do método sort() é o merge sort, implementado abaixo em C++:
+
+JSBool
+js::array_sort(JSContext *cx, uintN argc, Value *vp)
+{
+    jsuint len, newlen, i, undefs;
+    size_t elemsize;
+    JSString *str;
+
+    Value *argv = JS_ARGV(cx, vp);
+    Value fval;
+    if (argc > 0 && !argv[0].isUndefined()) {
+        if (argv[0].isPrimitive()) {
+            JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL, JSMSG_BAD_SORT_ARG);
+            return false;
+        }
+        fval = argv[0];     /* non-default compare function */
+    } else {
+        fval.setNull();
+    }
+
+    JSObject *obj = ToObject(cx, &vp[1]);
+    if (!obj)
+        return false;
++
+−    if (!js_GetLengthProperty(cx, obj, &len))
+        return false;
+    if (len == 0) {
+        vp->setObject(*obj);
+        return true;
+    }
+
+    /*
+     * We need a temporary array of 2 * len Value to hold the array elements
+     * and the scratch space for merge sort. Check that its size does not
+     * overflow size_t, which would allow for indexing beyond the end of the
+     * malloc'd vector.
+     */
+#if JS_BITS_PER_WORD == 32
+    if (size_t(len) > size_t(-1) / (2 * sizeof(Value))) {
+        js_ReportAllocationOverflow(cx);
+        return false;
+    }COPIAR CÓDIGO
+Esse conhecimento é importante para escolhermos os métodos nativos que aplicamos em nosso código e também para entendermos certos comportamentos dos programas e aplicações ao serem interpretados pelos motores.
+
+Você pode conferir aqui o código-fonte implementado pelo motor [SpiderMonkey](https://hg.mozilla.org/mozilla-central/file/28be8df0deb7/js/src/jsarray.cpp) e pelo motor [V8](https://github.com/v8/v8/blob/fe598532ec1317e8b85343133be9fb708e07bd2e/src/js/array.js#L768).
+
+Bônus: ordenação estável
+Algoritmos de ordenação podem ser estáveis ou instáveis. Caso queira começar neste assunto, este tópico do [Stack Overflow](https://pt.stackoverflow.com/questions/188646/o-que-define-um-algoritmo-de-ordena%C3%A7%C3%A3o-est%C3%A1vel) tem informações em português para começar; em seguida você pode conferir os [testes de estabilidade do método array.sort() em diferentes navegadores (em inglês)](https://stackoverflow.com/questions/3026281/what-is-the-stability-of-the-array-sort-method-in-different-browsers).
+
+## Para saber mais: Melhor caso versus pior caso
+
+
+Durante o desenvolvimento do código do quick sort, comentamos sobre o pior caso de execução de um algoritmo.
+
+Em algoritmos, os termos melhor caso e pior caso se referem à quantidade de recursos a ser utilizado na execução, que pode ser tempo de execução ou memória.
+
+Uma maneira adotada para mensurar a eficiência dos algoritmos, tendo em vista tempo de execução e espaço de memória, é por meio da notação Big O, que realiza a comparação desses dois parâmetros.
+
+Lembrando que a notação [Big O](https://estevestoni.medium.com/iniciando-com-a-nota%C3%A7%C3%A3o-big-o-be996fa3b47b) se refere a uma classificação de algoritmos de acordo com o tempo de execução, à medida em que aumenta a quantidade de dados a serem manipulados e a quantidade de memória exigida.
+
+Dessa forma, teremos o melhor caso de algoritmo quando ele apresenta a mesma quantidade de tempo para executar, independente do tamanho da entrada. E um pior caso quando se tem um maior tempo de execução considerando todas as possíveis entradas.
+
+Exemplo de Big O em algoritmos de ordenação:
+
+Algoritmo	estrutura	Complex. tempo: melhor caso	Complex. tempo: pior caso	Complex. espaço: pior caso
+Quick Sort	Array	O(n log(n))	O(n²)	O(n log(n))
+Merge Sort	Array	O(n log(n))	O(n log(n))	O(n)
+Heap Sort	Array	O(n log(n))	O(n log(n))	O(1)
+Smooth Sort	Array	O(n)	O(n log(n))	O(1)
+Bubble Sort	Array	O(n)	O(n²)	O(1)
+Insertion Sort	Array	O(n)	O(n²)	O(1)
+Selection Sort	Array	O(n²)	O(n²)	O(1)
+Onde:
+
+O(1): notação de Big O que representa um algoritmo que é executado em tempo constante.
+
+O(n): algoritmo que é executado em tempo linear, ou seja, as execuções aumentam de acordo com as entradas - como a busca linear.
+
+O(n log(n)): representa um algoritmo que reduz pela metade uma lista a cada vez que é executado - como o merge sort e o quick sort.
+
+O(n²): algoritmo com o tempo quadrático que por sua vez, significa que assim que o número de elementos na entrada aumenta, as execuções aumentam quadraticamente. Por isso, devemos evitar códigos com essa notação de Big O, pois o número de operações aumenta significativamente a cada entrada - como o selection sort e o insertion sort.
+
+
+## Para saber mais: Logaritmo binário
+
+
+Em computação sempre é utilizado o logaritmo com base 2 (e, consequentemente, o inverso é a potência de 2). Assim, log n representa de forma abreviada log2 n, ou seja, log de n na base 2.
+
+Esta característica está ligada ao sistema numérico utilizado pelos computadores: o sistema binário (ou de base 2), onde todos os valores são representados pelos números 0 e 1.
+
+Assim, sempre que trabalharmos com valores O(log n), estamos nos referindo a base 2.
+
+
+## Projeto Final do Curso [AQUI](https://github.com/alura-cursos/2360-algoritmos-js-II/tree/aula-4)
+
+## CONCLUSÃO
+
+Aprendemos a fazer a análise assintótica do algoritmo de busca binária e por que este é considerado um algoritmo de complexidade logarítmica, em comparação com a busca linear que é um algoritmo de complexidade linear;
+Fizemos a análise assintótica dos algoritmos de ordenação quick sort e merge sort e analisamos o código para entendermos por que são considerados algoritmos de complexidade linear-logarítmica;
+E o que significa, em termos de performance, a diferença entre algoritmos de crescimento linear, quadrático e logarítmico.
 
 
 
